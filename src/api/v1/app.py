@@ -7,8 +7,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import fitz
 from io import BytesIO
-from fastapi.responses import StreamingResponse
-import io
 from langchain_community.chat_models import AzureChatOpenAI
 from fastapi.responses import StreamingResponse
 from langchain.embeddings import OpenAIEmbeddings
@@ -21,7 +19,8 @@ from src.config import (
     AWS_ACCESS_KEY,
     AWS_SECRET_ACCESS_KEY,
     AWS_BUCKET_NAME,
-    AWS_REGION
+    AWS_REGION,
+    MAIN_TENANT
 )
 from src.utils.exceptions import return_error_param
 from src.gen_ai.rag.pinecone_operation import (
@@ -58,11 +57,11 @@ openaiembeddings=OpenAIEmbeddings(
 )
 
 
-@api_router.post("/uploadfile")
+@api_router.post("/upload_document_and_trigger_indexing")
 async def upload_file(request: Request,
                       file: UploadFile = File(...)):
 
-    folder_name="staple_ai_client/"
+    folder_name=f"{MAIN_TENANT}/"
 
     # check if file is valid
     if file.content_type != "application/pdf":
@@ -86,8 +85,8 @@ async def upload_file(request: Request,
         logging.info("file_size: ",file_size)
 
         s3_dockey=f"{folder_name}{file.filename}"
-
-        logging.info("pass_this_stage")
+        
+        logging.info("start uploading pdf document to s3 bucket")
 
         # Upload file to S3
         s3_client.put_object(
@@ -96,8 +95,9 @@ async def upload_file(request: Request,
             Body=file_content,
             ContentType=file.content_type
         )
+        
+        logging.info("uploading pdf document to s3 bucket successfully")
 
-        return {"message": "File uploaded successfully", "filename": file.filename}
     except NoCredentialsError:
         raise HTTPException(status_code=403, detail="AWS credentials not found")
     except PartialCredentialsError:
@@ -106,7 +106,34 @@ async def upload_file(request: Request,
         raise HTTPException(
             status_code=return_error_param(e,"status_code"), 
             detail=return_error_param(e,"detail"))
+        
+    # start indexing the document
+    logging.info("start_pinecone_indexing")
     
+    # retrieve pdf from aws
+    file_content= get_file(
+        s3_client=s3_client,
+        doc_key=s3_dockey
+    )[0]
+
+    logging.info("file_content: ",file_content)
+
+    # run pinecone indexing pineline
+    # try:
+    init_pinecone_and_doc_indexing(
+        username=MAIN_TENANT,
+        doc_key=s3_dockey,
+        file_bytes=file_content
+    )
+    # except Exception as e:
+    #     raise HTTPException(status_code=500,
+    #                         detail="We encouter error when spinning up chat engine for this document")
+    
+    logging.info(f"successully indexed pdf document {file.filename}")
+        
+    return {"message": "File uploaded and indexed successfully", 
+            "filename": file.filename}
+
 
 @api_router.get("/fetch_messages/{doc_name}")
 async def retrieve_messages_from_pinecone(
@@ -164,34 +191,80 @@ async def retrieve_messages_from_pinecone(
         
     return {"data":[]}
 
-@api_router.post("/generate_response/{doc_name}")
-async def retrieve_messages_from_pinecone(
+@api_router.post("/semantic_search/{doc_name}")
+async def generate_result_for_semantic_search(
     doc_name: str,
-    request: ChatMessagesRequest,
-    ):
-   
-    logging.info("start_pinecone_indexing")
-    # retrieve pdf from aws
-    file_content= get_file(
-        s3_client=s3_client,
-        doc_key=f"staple_ai_client/{doc_name}"
-    )[0]
+    request: ChatMessagesRequest
+):
+    logging.info("doc name: ",doc_name)
+    
+    # Parameters
+    bucket_name = AWS_BUCKET_NAME
+    subfolder_prefix = f"{MAIN_TENANT}/"  # Include trailing slash
+    
+    try:
 
-    logging.info("file_content: ",file_content)
+        # List objects under the subfolder
+        response = s3_client.list_objects_v2(Bucket=bucket_name, 
+                                    Prefix=subfolder_prefix)
 
-    # run pinecone indexing pineline
-    # try:
-    init_pinecone_and_doc_indexing(
-        username="staple_ai_client",
-        doc_key=f"staple_ai_client/{doc_name}",
-        file_bytes=file_content
-    )
-    # except Exception as e:
-    #     raise HTTPException(status_code=500,
-    #                         detail="We encouter error when spinning up chat engine for this document")
+        # Extract and print document names
+        if 'Contents' in response:
+            document_names = [obj['Key'] for obj in response['Contents']]
+            logging.info(f"Document names: {document_names}")
+            
+            if subfolder_prefix+doc_name not in document_names:
+                raise HTTPException(
+                    status_code=404,
+                     detail=f"Document name {doc_name} does not exists in S3 bucket"
+                )
+                
+        else:
+            raise HTTPException(
+                status_code=404,
+                detail=f"This sub path contain no documents"
+            )
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=return_error_param(e,"status_code"), 
+            detail=return_error_param(e,"detail")
+        )
         
-    return {"data":"okie"}
+    # implement semantic search
+  
+    user_query=request.list_of_messages[-1]
+    history_messages=request.list_of_messages[:-1]
 
+    logging.info("user_query: ",user_query)
+    logging.info("history_messages: ",history_messages)
+
+    if not history_messages:
+        standalone_query=user_query.content
+    else:
+        standalone_query=generate_standalone_query(
+            llm=llm,
+            user_query=user_query,
+            history_messages=history_messages
+        )
+    
+    
+
+    return StreamingResponse(
+        generate_system_response(
+            llm=llm,
+            openai_embeddings=openaiembeddings,
+            standalone_query=standalone_query,
+            username=username,
+            history_messages=history_messages,
+            doc_key=f"{username}/{doc_name}",
+            top_k=10,
+            doc_name=doc_name
+        ), 
+        media_type="text/event-stream")
+
+        
+    
 
 # Example endpoint to fetch and return a PDF from S3
 @api_router.get("/get-pdf/{file_name}")

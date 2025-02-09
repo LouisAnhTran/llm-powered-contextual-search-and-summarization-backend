@@ -8,8 +8,8 @@ from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_community.embeddings import AzureOpenAIEmbeddings
-from langchain_community.chat_models import AzureChatOpenAI
 from datetime import datetime
+from langchain_openai import ChatOpenAI
 
 from src.gen_ai.rag.pinecone_operation import query_by_username_dockey
 from src.gen_ai.rag.prompt_template import (
@@ -29,6 +29,7 @@ def format_chat_history(chat_history: List[SingleChatMessageRequest]) -> ChatMes
         ChatMessageHistory: Formatted chat history compatible with LangChain
     """
     chat_history_formatted = ChatMessageHistory()
+    
     for message in chat_history:
         if message.role == "user":
             chat_history_formatted.add_user_message(message.content)
@@ -39,16 +40,22 @@ def format_chat_history(chat_history: List[SingleChatMessageRequest]) -> ChatMes
             )
         else:
             logging.info("sender of this message is not valid")
+            
+    logging.info("chat_history_formatted: ",chat_history_formatted)
 
     return chat_history_formatted
 
 def generate_standalone_query(
-        llm: AzureChatOpenAI,
+        llm: ChatOpenAI,
         user_query: SingleChatMessageRequest,
         history_messages: List[SingleChatMessageRequest]):
+    
+    logging.info("inside generate_standalone_query")
+    
     formatted_chat_history=format_chat_history(
         chat_history=history_messages
     )
+    
     logging.info("formatted_chat_history: ",formatted_chat_history)
 
     question_generator_template = PromptTemplate.from_template(
@@ -67,7 +74,7 @@ def generate_standalone_query(
 
 
 async def generate_system_response(
-        llm: AzureChatOpenAI,
+        llm: ChatOpenAI,
         openai_embeddings: AzureOpenAIEmbeddings,
         standalone_query: str,
         username: str,
