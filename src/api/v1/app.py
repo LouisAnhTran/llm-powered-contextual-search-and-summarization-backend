@@ -7,8 +7,6 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import fitz
 from io import BytesIO
-from langchain_community.chat_models import AzureChatOpenAI
-from fastapi.responses import StreamingResponse
 from langchain.embeddings import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
 
@@ -24,7 +22,7 @@ from src.config import (
 )
 from src.utils.exceptions import return_error_param
 from src.gen_ai.rag.pinecone_operation import (
-    query_by_username_dockey
+    retrieve_top_k_similar_search_from_vector_db
 )
 from src.utils.aws_operation import (
     get_file
@@ -52,8 +50,8 @@ llm = ChatOpenAI(
     max_retries=2,
 )
 
-openaiembeddings=OpenAIEmbeddings(
-    model='text-embedding-3-large'
+embedding_model=OpenAIEmbeddings(
+    model='text-embedding-ada-002'
 )
 
 
@@ -123,7 +121,8 @@ async def upload_file(request: Request,
     init_pinecone_and_doc_indexing(
         username=MAIN_TENANT,
         doc_key=s3_dockey,
-        file_bytes=file_content
+        file_bytes=file_content,
+        embedding_model=embedding_model
     )
     # except Exception as e:
     #     raise HTTPException(status_code=500,
@@ -183,7 +182,8 @@ async def retrieve_messages_from_pinecone(
             init_pinecone_and_doc_indexing(
             username=username,
             doc_key=f"{username}/{doc_name}",
-            file_bytes=file_content
+            file_bytes=file_content,
+            embedding_model=embedding_model
         )
         except Exception as e:
             raise HTTPException(status_code=500,
@@ -248,20 +248,19 @@ async def generate_result_for_semantic_search(
             history_messages=history_messages
         )
     
-    
 
-    return StreamingResponse(
-        generate_system_response(
+    result=await generate_system_response(
             llm=llm,
-            openai_embeddings=openaiembeddings,
+            embedding_model=embedding_model,
             standalone_query=standalone_query,
-            username=username,
+            username=MAIN_TENANT,
             history_messages=history_messages,
-            doc_key=f"{username}/{doc_name}",
-            top_k=10,
-            doc_name=doc_name
-        ), 
-        media_type="text/event-stream")
+            doc_key=f"{MAIN_TENANT}/{doc_name}",
+            top_k=1,
+    )
+    
+    return {"data":"okie"}
+   
 
         
     

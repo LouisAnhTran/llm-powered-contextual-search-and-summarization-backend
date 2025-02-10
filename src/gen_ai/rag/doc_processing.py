@@ -35,18 +35,21 @@ def chunks(iterable, batch_size=100):
         yield chunk
         chunk = tuple(itertools.islice(it, batch_size))
 
-def create_iterable_vectors(username,doc_key,file_bytes):
+def create_iterable_vectors(username,doc_key,file_bytes,embedding_model):
     text=extract_text_from_pdf(file_bytes)
-    embeddings_model = OpenAIEmbeddings()
     chunk_docs=chunk_text(text)
-    vectors=[embeddings_model.embed_query(chunk) for chunk in chunk_docs]
+    vectors=[embedding_model.embed_query(chunk) for chunk in chunk_docs]
     iterable_vector=[{"id":f"{doc_key}_{i}","values":item[1],"metadata":{"username":username,"doc_key":doc_key,"text":item[0]}} for i,item in enumerate(list(zip(chunk_docs,vectors)))]
     return iterable_vector
 
-def init_pinecone_and_doc_indexing(username,doc_key,file_bytes):
+def init_pinecone_and_doc_indexing(username
+                                   ,doc_key,
+                                   file_bytes,
+                                   embedding_model):
+    
     pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
     with pc.Index(os.getenv("PINECONE_INDEX"), pool_threads=30) as index:
-        iterable_vector=create_iterable_vectors(username,doc_key,file_bytes)
+        iterable_vector=create_iterable_vectors(username,doc_key,file_bytes,embedding_model=embedding_model)
         
         print("done embeddings, now start upserting")
         # Send requests in parallel
