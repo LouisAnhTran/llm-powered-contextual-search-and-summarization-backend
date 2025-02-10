@@ -54,6 +54,33 @@ embedding_model=OpenAIEmbeddings(
     model='text-embedding-ada-002'
 )
 
+@api_router.get("/get_uploaded_documents")
+async def get_all_uploaded_pdf_documents_belong_to_user():
+    # Parameters
+    bucket_name = AWS_BUCKET_NAME
+    subfolder_prefix = f"{MAIN_TENANT}/"  # Include trailing slash
+    
+    try:
+        # List objects under the subfolder
+        response = s3_client.list_objects_v2(Bucket=bucket_name, 
+                                    Prefix=subfolder_prefix)
+
+        # Extract and print document names
+        if 'Contents' in response:
+            document_names = [obj['Key'] for obj in response['Contents']]
+            document_names_without_slash=[item.split("/")[1] for item in document_names]
+            logging.info(f"Document names: {document_names_without_slash}")
+            
+            return {"response": document_names_without_slash}
+        
+        return {"response":[]}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=return_error_param(e,"status_code"), 
+            detail=return_error_param(e,"detail")
+        )
+        
 
 @api_router.post("/upload_document_and_trigger_indexing")
 async def upload_file(request: Request,
@@ -132,6 +159,7 @@ async def upload_file(request: Request,
         
     return {"message": "File uploaded and indexed successfully", 
             "filename": file.filename}
+
 
 
 @api_router.get("/fetch_messages/{doc_name}")

@@ -38,7 +38,7 @@ class ChatMessagesRequest(BaseModel):
                 "timestamp": "2023-07-17T12:34:56"
             },
             {
-                "role": "system",
+                "role": "assistant",
                 "content": "The document is about is Programming language concept and compiler design",
                 "timestamp": "2023-07-17T12:35:10"
             },

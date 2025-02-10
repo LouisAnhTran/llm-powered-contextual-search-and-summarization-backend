@@ -38,7 +38,7 @@ def format_chat_history(chat_history: List[SingleChatMessageRequest]) -> ChatMes
     for message in chat_history:
         if message.role == "user":
             chat_history_formatted.add_user_message(message.content)
-        elif message.role == "system":
+        elif message.role == "assistant":
             # revert output format
             chat_history_formatted.add_ai_message(
                 message=message.content
