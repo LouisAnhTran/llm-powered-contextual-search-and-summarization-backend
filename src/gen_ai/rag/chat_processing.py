@@ -109,7 +109,7 @@ async def generate_system_response(
     
     clarity_score=textstat.flesch_reading_ease(" ".join(all_texts))
     
-    logging.info("reading_score: ",clarity_score)
+    logging.info("clarity_score: ",clarity_score)
     
     if clarity_score < CLARITY_SCORE_FOR_READABILITY:
         
@@ -133,5 +133,8 @@ async def generate_system_response(
         
         logging.info("result_semantic_search: ",result['text'])
 
-        
+        return result['text']
     
+    else:
+        
+        return all_texts[0]

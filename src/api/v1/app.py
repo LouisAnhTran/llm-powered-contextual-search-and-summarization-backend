@@ -249,7 +249,7 @@ async def generate_result_for_semantic_search(
         )
     
 
-    result=await generate_system_response(
+    result_semantic_search=await generate_system_response(
             llm=llm,
             embedding_model=embedding_model,
             standalone_query=standalone_query,
@@ -259,11 +259,8 @@ async def generate_result_for_semantic_search(
             top_k=1,
     )
     
-    return {"data":"okie"}
+    return {"response":result_semantic_search}
    
-
-        
-    
 
 # Example endpoint to fetch and return a PDF from S3
 @api_router.get("/get-pdf/{file_name}")
