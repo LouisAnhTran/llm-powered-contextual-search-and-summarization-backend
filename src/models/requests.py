@@ -1,22 +1,8 @@
 
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
-class UserSignUpRequest(BaseModel):
-    username: str=Field(example="louis_anh_tran")
-    email: str=Field(example="namanhtrancong@gmail.com")
-    password: str=Field(example="12345678")
-    
-
-class UserSignInRequest(BaseModel):
-    username: str=Field(example="louis_anh_tran")
-    password: str=Field(example="12345678")
-
-class FetchChatMessagesRequest(BaseModel):
-    filename: str=Field(
-        example="e_casptone_doc.pdf"
-    )
 
 class SingleChatMessageRequest(BaseModel):
     role:  str=Field(
@@ -49,3 +35,5 @@ class ChatMessagesRequest(BaseModel):
             }
         ]
     )
+    preferred_response_length: Optional[str] = Field(default="medium", example="short")
+ 

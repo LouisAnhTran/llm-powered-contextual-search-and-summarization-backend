@@ -16,13 +16,15 @@ from src.gen_ai.rag.pinecone_operation import (
 )
 from src.gen_ai.rag.prompt_template import (
     CONDENSE_HISTORY_TO_STANDALONE_QUERY_TEMPLATE,
-    CONVERSATION_WITH_REFERENCES_TEMPLATE
+    PERFORM_SEMANTIC_SEARCH_WITH_CONTEXT_TEMPLATE,
+    SUMMARIZE_SIMILAR_PASSAGE_INTO_CONCISE_RESPONSE_TEMPLATE
 )
 from src.models.requests import (
     SingleChatMessageRequest
 )
 from src.config import (
-    CLARITY_SCORE_FOR_READABILITY
+    CLARITY_SCORE_FOR_READABILITY,
+    SIMILARITY_SEARCH_THRESHOLD
 )
 
 
@@ -78,7 +80,7 @@ def generate_standalone_query(
     return response['text']
 
 
-async def generate_system_response(
+async def generate_semantic_search_response(
         llm: ChatOpenAI,
         embedding_model: OpenAIEmbeddings,
         standalone_query: str,
@@ -107,34 +109,101 @@ async def generate_system_response(
 
     logging.info("all_texts: ",all_texts)
     
-    clarity_score=textstat.flesch_reading_ease(" ".join(all_texts))
+    logging.info("SIMILARITY_SEARCH_THRESHOLD: ",SIMILARITY_SEARCH_THRESHOLD)
     
-    logging.info("clarity_score: ",clarity_score)
+    logging.info("CLARITY_SCORE_FOR_READABILITY: ",CLARITY_SCORE_FOR_READABILITY)
     
-    if clarity_score < CLARITY_SCORE_FOR_READABILITY:
+    if similarity_score >= SIMILARITY_SEARCH_THRESHOLD:
         
-        formatted_chat_history=format_chat_history(
-            chat_history=history_messages
-        )
+        clarity_score=textstat.flesch_reading_ease(" ".join(all_texts))
+        
+        logging.info("clarity_score: ",clarity_score)
 
-        chat_template = PromptTemplate.from_template(CONVERSATION_WITH_REFERENCES_TEMPLATE)
-        
-        chain = LLMChain(llm=llm, prompt=chat_template)
-        
+        if clarity_score < CLARITY_SCORE_FOR_READABILITY:
+            
+            formatted_chat_history=format_chat_history(
+                chat_history=history_messages
+            )
 
-        result = chain(
-            {
-                "context": all_texts,
-                "chat_history": formatted_chat_history,
-                "question": standalone_query,
-            },
-            return_only_outputs=True
-        )
-        
-        logging.info("result_semantic_search: ",result['text'])
+            chat_template = PromptTemplate.from_template(PERFORM_SEMANTIC_SEARCH_WITH_CONTEXT_TEMPLATE)
+            
+            chain = LLMChain(llm=llm, prompt=chat_template)
+            
 
-        return result['text']
+            result = chain(
+                {
+                    "context": all_texts,
+                    "chat_history": formatted_chat_history,
+                    "question": standalone_query,
+                },
+                return_only_outputs=True
+            )
+            
+            logging.info("result_semantic_search: ",result['text'])
+
+            return result['text']
     
-    else:
+        else:
+            
+            return all_texts[0]
         
-        return all_texts[0]
+    else: # the relevant pass has not been found, a fallback LLM-generated summary
+        logging.info("No relavant passage is found based on user query")
+        
+        logging.info("Trigger fallback LLM-generated summary")
+        
+        
+        pass
+    
+    
+async def generate_summarized_response(
+        llm: ChatOpenAI,
+        embedding_model: OpenAIEmbeddings,
+        standalone_query: str,
+        username: str,
+        history_messages: List[SingleChatMessageRequest],
+        doc_key: str,
+        top_k: int,
+        preferred_response_length: str
+):
+    logging.info("inside_generate_summarized_response")
+    
+    similar_results=retrieve_top_k_similar_search_from_vector_db(
+        username=username,
+        doc_key=doc_key,
+        query=standalone_query,
+        top_k=top_k,
+        embedding_model=embedding_model
+    )
+
+    logging.info("similar_results: ",similar_results)
+    
+    all_texts=[chunk['metadata']['text'] for chunk in similar_results]
+
+    logging.info("all_texts: ",all_texts)
+    
+    formatted_chat_history=format_chat_history(
+        chat_history=history_messages
+    )
+
+    chat_template = PromptTemplate.from_template(SUMMARIZE_SIMILAR_PASSAGE_INTO_CONCISE_RESPONSE_TEMPLATE)
+    
+    chain = LLMChain(llm=llm, prompt=chat_template)
+    
+
+    result = chain(
+        {
+            "context": all_texts,
+            "chat_history": formatted_chat_history,
+            "question": standalone_query,
+            "preferred_response_length": preferred_response_length
+        },
+        return_only_outputs=True
+    )
+    
+    logging.info("result_summary: ",result['text'])
+
+    return result['text']
+
+
+   
