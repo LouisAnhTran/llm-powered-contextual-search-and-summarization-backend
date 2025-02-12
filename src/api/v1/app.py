@@ -169,7 +169,8 @@ async def generate_result_for_semantic_search(
     request: ChatMessagesRequest
 ):
     logging.info("doc name: ",doc_name)
-    
+    logging.info("request_semantic_search: ",request.list_of_messages)
+
     # Parameters
     bucket_name = AWS_BUCKET_NAME
     subfolder_prefix = f"{MAIN_TENANT}/"  # Include trailing slash
@@ -210,6 +211,7 @@ async def generate_result_for_semantic_search(
 
     logging.info("user_query: ",user_query)
     logging.info("history_messages: ",history_messages)
+    logging.info("len_history_messages: ",len(history_messages))
 
     if not history_messages:
         standalone_query=user_query.content
@@ -241,6 +243,7 @@ async def generate_result_for_semantic_search(
 ):
     logging.info("doc name: ",doc_name)
     logging.info("preferred_response_length: ",request.preferred_response_length)
+    logging.info("request_generate_summarization: ",request.list_of_messages)
     
     # Parameters
     bucket_name = AWS_BUCKET_NAME
