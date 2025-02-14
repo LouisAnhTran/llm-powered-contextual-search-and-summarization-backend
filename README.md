@@ -71,7 +71,7 @@ This section outlines the technologies and tools used to develop the application
 * AI/ML Framework: [![fastapi-shield][langchain-shield]][JQuery-url]
 * LLM Provider: OpenAI
 * Chat model: gpt-4o
-* Embedding model: ext-embedding-ada-002
+* Embedding model: text-embedding-ada-002
 * Vector database: Pinecone
 * PDF Document storage: AWS S3 Bucket
 * Caching: Redis
@@ -138,6 +138,12 @@ poetry --version
 
 
 ## Architecture: 
+
+1. System Architecture:
+   
+![Screenshot 2025-02-15 at 12 20 59 AM](https://github.com/user-attachments/assets/6c1596c7-355a-45a2-8844-8c2f2f243850)
+
+
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
