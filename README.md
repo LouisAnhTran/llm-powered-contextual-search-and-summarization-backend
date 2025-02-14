@@ -24,7 +24,7 @@
 
 <h2 align="center" style="text-decoration: none;">Document processing AI Application</h2>
 
-## About The Project :
+## About The Application :
 
 This application is designed to efficiently process contextual and semantic search, as well as summarization, on large PDF documents. The list of main features offered by the application is below:
 
@@ -62,78 +62,65 @@ This application is designed to efficiently process contextual and semantic sear
 </details>
 
 
+## Built With
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+This section outlines the technologies and tools used to develop the application.
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+* Backend: [![fastapi-shield][fastapi-shield]][JQuery-url]
+* Frontend: [![fastapi-shield][streamlit-shield]][JQuery-url]
+* AI/ML Framework: [![fastapi-shield][langchain-shield]][JQuery-url]
+* LLM Provider: OpenAI
+* Chat model: gpt-4o
+* Embedding model: ext-embedding-ada-002
+* Vector database: Pinecone
+* PDF Document storage: AWS S3 Bucket
+* Caching: Redis
+* Parsing large PDFs document: PyMuPDF
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
+1. Poetry:
+  - Follow the link below to install Poetry, which is a common tool for dependency management and packaging in Python, specially for AI Applications.
+[Poetry](https://python-poetry.org/docs/)
+
+2. Docker:
+  - Install Docker to run Redis server container later for caching LLM responses.
+[Docker](https://docs.docker.com/engine/install/)
+
+2. Clone the project to your local machine.
+
+  ``` 
+  git clone https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend.git
   ```
+
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+1. Add the .env File:
+- Place the .env file in the main project folder.
+- It should contain all necessary credentials, including the AWS Access Key, OpenAI API Key, Pinecone API Key, etc.
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+2. Install Dependencies:
+  ```sh
+  poetry install
+  ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+3. Create an Python virtual environment 
 
+  ```sh
+  poetry shell
+  ```
+
+4. Run the application
+  ```sh
+  poetry run python main.py   
+  ```
+5. Viewing API Endpoins through Swagger UI
+- Right now the application should be up and running at port 8080. Click on [SwaggerUI](http://localhost:8080/docs) to view the list of all API endpoints.
 
 
 <!-- USAGE EXAMPLES -->
@@ -251,6 +238,9 @@ Use this space to list resources you find helpful and would like to give credit 
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
 
+[fastapi-shield]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
+[streamlit-shield]: https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white
+[langchain-shield]: https://img.shields.io/badge/LangChain-ffffff?logo=langchain&logoColor=green
 
 
 
