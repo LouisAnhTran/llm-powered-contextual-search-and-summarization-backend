@@ -17,7 +17,7 @@
 
 <div align="center">
   
-# LLM-Powered Contextual Search & Summarization
+# LLM-Powered Contextual Search & Summarization - Backend
 
 </div>
 
