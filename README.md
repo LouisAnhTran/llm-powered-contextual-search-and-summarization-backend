@@ -119,7 +119,13 @@ This section outlines the technologies and tools used to develop the application
   ```sh
   poetry run python main.py   
   ```
-5. Viewing API Endpoins through Swagger UI
+
+5. Run the Redis server using Docker container for caching LLM respone
+  ```sh
+  docker run -d --name redis -p 6379:6379 redis      
+  ```
+
+6. Viewing API Endpoins through Swagger UI
 - Right now the application should be up and running at port 8080. Click on [SwaggerUI](http://localhost:8080/docs) to view the list of all API endpoints.
 
 
