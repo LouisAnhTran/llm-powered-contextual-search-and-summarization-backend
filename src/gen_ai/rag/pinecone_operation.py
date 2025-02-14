@@ -1,28 +1,21 @@
-import os
-import pinecone
 from langchain.embeddings import OpenAIEmbeddings
-from dotenv import load_dotenv
-from pinecone import Pinecone
 import logging
 
-load_dotenv()
-
-pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-
-index = pc.Index(os.getenv("PINECONE_INDEX"))
 
 def retrieve_top_k_similar_search_from_vector_db(
         username:str, 
         doc_key: str,
         query: str,
         top_k: int,
-        embedding_model: OpenAIEmbeddings
+        embedding_model: OpenAIEmbeddings,
+        pinecone_index
+        
 ):
     embedding_query=embedding_model.embed_query(query)
     
-    print("len of emdedding query: ",len(embedding_query))
+    logging.info("len of emdedding query: ",len(embedding_query))
     
-    results=index.query(
+    results=pinecone_index.query(
         vector=embedding_query,
         filter={
             "username": {"$eq": username},
