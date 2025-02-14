@@ -38,9 +38,9 @@ This application is designed to efficiently process contextual and semantic sear
 
 This section outlines the technologies and tools used to develop the application.
 
-* Backend: [![fastapi-shield][fastapi-shield]][JQuery-url]
-* Frontend: [![fastapi-shield][streamlit-shield]][JQuery-url]
-* AI/ML Framework: [![fastapi-shield][langchain-shield]][JQuery-url]
+* Backend: ![fastapi-shield][fastapi-shield]
+* Frontend: ![fastapi-shield][streamlit-shield]
+* AI/ML Framework: ![fastapi-shield][langchain-shield]
 * LLM Provider: OpenAI
 * Chat model: gpt-4o
 * Embedding model: text-embedding-ada-002
@@ -48,6 +48,14 @@ This section outlines the technologies and tools used to develop the application
 * PDF Document storage: AWS S3 Bucket
 * Caching: Redis
 * Parsing large PDFs document: PyMuPDF
+
+## Main components:
+
+- API Endpoints are defined under [API Endpoints](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/api/v1/app.py)
+- Document indexing pipeline is defined under [Document Indexing Pipeline](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/gen_ai/rag/doc_processing.py)
+- Handling of LLM API calls and Chaining are managed and defined under [LLM API Calls + Chaining](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/gen_ai/rag/chat_processing.py)
+- Prompt templates are defined under [Prompt Templates](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/gen_ai/rag/prompt_template.py)
+- All constant variables needed to run the application are defined under [Configurations](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/config.py)
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -112,90 +120,26 @@ poetry --version
 
 ## Architecture: 
 
-###. System Architecture:
+### System Architecture:
    
 ![Screenshot 2025-02-15 at 12 20 59 AM](https://github.com/user-attachments/assets/6c1596c7-355a-45a2-8844-8c2f2f243850)
 
-###. Flow diagrams:
+### Flow diagrams:
 
 1. Semantic Search:
 
 2. Contextual Summarization:
 
-
-
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [x] Add Additional Templates w/ Examples
-- [x] Add "components" document to easily copy & paste sections of the readme
-- [x] Multi-language Support
-
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
+## References:
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+- ![FastAPI](https://fastapi.tiangolo.com/)
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+- ![Redis](https://redis.io/)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+- ![Pipecone](https://www.pinecone.io/)
+
+
 
 
 
