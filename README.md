@@ -125,6 +125,7 @@ poetry --version
   ```
 
 5. Run the Redis server as a Docker container for caching LLM respone
+- Open another terminal and type in following command
   ```sh
   docker run -d --name redis -p 6379:6379 redis      
   ```
