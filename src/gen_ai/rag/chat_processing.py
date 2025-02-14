@@ -1,14 +1,11 @@
 
 from typing import List
-import json
 import logging
 import textstat
-
 from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.embeddings import OpenAIEmbeddings
-from datetime import datetime
 from langchain_openai import ChatOpenAI
 
 from src.gen_ai.rag.pinecone_operation import (
@@ -17,7 +14,8 @@ from src.gen_ai.rag.pinecone_operation import (
 from src.gen_ai.rag.prompt_template import (
     CONDENSE_HISTORY_TO_STANDALONE_QUERY_TEMPLATE,
     PERFORM_SEMANTIC_SEARCH_WITH_CONTEXT_TEMPLATE,
-    SUMMARIZE_SIMILAR_PASSAGE_INTO_CONCISE_RESPONSE_TEMPLATE
+    SUMMARIZE_SIMILAR_PASSAGE_INTO_CONCISE_RESPONSE_TEMPLATE,
+    LLM_GENERATED_SUMMARY_FALLBACK
 )
 from src.models.requests import (
     SingleChatMessageRequest
@@ -113,6 +111,7 @@ async def generate_semantic_search_response(
     
     logging.info("CLARITY_SCORE_FOR_READABILITY: ",CLARITY_SCORE_FOR_READABILITY)
     
+    
     if similarity_score >= SIMILARITY_SEARCH_THRESHOLD:
         
         clarity_score=textstat.flesch_reading_ease(" ".join(all_texts))
@@ -129,7 +128,6 @@ async def generate_semantic_search_response(
             
             chain = LLMChain(llm=llm, prompt=chat_template)
             
-
             result = chain(
                 {
                     "context": all_texts,
@@ -152,8 +150,26 @@ async def generate_semantic_search_response(
         
         logging.info("Trigger fallback LLM-generated summary")
         
+        formatted_chat_history=format_chat_history(
+                chat_history=history_messages
+        )
+
+        chat_template = PromptTemplate.from_template(LLM_GENERATED_SUMMARY_FALLBACK)
         
-        pass
+        chain = LLMChain(llm=llm, prompt=chat_template)
+        
+        result = chain(
+            {
+                "context": all_texts,
+                "chat_history": formatted_chat_history,
+                "question": standalone_query,
+            },
+            return_only_outputs=True
+        )
+        
+        logging.info("result_semantic_search_fall_back: ",result['text'])
+
+        return result['text']
     
     
 async def generate_summarized_response(

@@ -1,8 +1,5 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile, Request, Header
+from fastapi import APIRouter, HTTPException, File, UploadFile, Request
 import logging
-import time 
-from datetime import datetime, timedelta 
-from typing import Optional
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 import fitz
@@ -12,8 +9,7 @@ from langchain_openai import ChatOpenAI
 
 
 from src.models.requests import (
-    ChatMessagesRequest,
-    SingleChatMessageRequest
+    ChatMessagesRequest
 )
 from src.config import (
     AWS_ACCESS_KEY,
@@ -23,9 +19,6 @@ from src.config import (
     MAIN_TENANT
 )
 from src.utils.exceptions import return_error_param
-from src.gen_ai.rag.pinecone_operation import (
-    retrieve_top_k_similar_search_from_vector_db
-)
 from src.utils.aws_operation import (
     get_file
 )
