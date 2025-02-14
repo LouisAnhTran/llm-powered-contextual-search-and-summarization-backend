@@ -113,9 +113,8 @@ poetry --version
 6. Viewing API Endpoins through Swagger UI
 - Right now the application should be up and running at port 8080. Click on [SwaggerUI](http://localhost:8080/docs) to view the list of all API endpoints.
 
-7. Open Frontend
-- Access the following repo to set up and run the Frontend of the application. [Frontend Repo](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-frontend)
-
+7. Run Frontend
+- Once Backend is alreaydy up and running, please access the following repo to set up and run the Frontend of the application. [Frontend Repo](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-frontend)
 
 
 ## Architecture: 
