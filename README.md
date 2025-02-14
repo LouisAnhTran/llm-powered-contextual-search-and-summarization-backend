@@ -139,7 +139,7 @@ poetry --version
 
 - [Pipecone](https://www.pinecone.io/)
 
-
+- [Streamlit](https://streamlit.io/)
 
 
 
