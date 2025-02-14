@@ -84,14 +84,18 @@ This section outlines the technologies and tools used to develop the application
 ### Prerequisites
 
 1. Poetry:
-  - Follow the link below to install Poetry, which is a common tool for dependency management and packaging in Python, specially for AI Applications.
+  - Use the follow command to check whether poetry is installed in your machine
+```
+poetry --version
+```
+  - If poetry is not yet installed in your machine, please follow the link below to install Poetry, which is a common tool for dependency management and packaging in Python, specially for AI Applications.
 [Poetry](https://python-poetry.org/docs/)
 
 2. Docker:
   - Install Docker to run Redis server container later for caching LLM responses.
 [Docker](https://docs.docker.com/engine/install/)
 
-2. Clone the project to your local machine.
+3. Clone the project to your local machine.
 
   ``` 
   git clone https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend.git
@@ -120,7 +124,7 @@ This section outlines the technologies and tools used to develop the application
   poetry run python main.py   
   ```
 
-5. Run the Redis server using Docker container for caching LLM respone
+5. Run the Redis server as a Docker container for caching LLM respone
   ```sh
   docker run -d --name redis -p 6379:6379 redis      
   ```
