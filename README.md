@@ -133,11 +133,11 @@ poetry --version
 <!-- ACKNOWLEDGMENTS -->
 ## References:
 
-- ![FastAPI](https://fastapi.tiangolo.com/)
+- [FastAPI](https://fastapi.tiangolo.com/)
 
-- ![Redis](https://redis.io/)
+- [Redis](https://redis.io/)
 
-- ![Pipecone](https://www.pinecone.io/)
+- [Pipecone](https://www.pinecone.io/)
 
 
 
