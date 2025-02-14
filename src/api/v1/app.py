@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile, Request
+from fastapi import APIRouter, HTTPException, File, UploadFile, Request, Depends
 import logging
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
@@ -7,6 +7,10 @@ from io import BytesIO
 from langchain.embeddings import OpenAIEmbeddings
 from langchain_openai import ChatOpenAI
 from pinecone import Pinecone
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+import redis.asyncio as redis
+import time
 
 from src.models.requests import (
     ChatMessagesRequest
@@ -60,11 +64,21 @@ embedding_model=OpenAIEmbeddings(
 
 # init connection to Pipecone Vector DB index
 pinecone_instance = Pinecone(api_key=PINECONE_API_KEY)
-
 pinecone_index = pinecone_instance.Index(PINECONE_INDEX)
 
 
+
 # DEFINE API ENDPOINS
+
+# Initialize Redis on FastAPI startup
+@api_router.on_event("startup")
+async def startup():
+    redis_client = redis.Redis(host="localhost", port=6379, db=0)
+    FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
+
+# Dependency to get Redis backend
+async def get_redis_cache():
+    return FastAPICache.get_backend()
 
 # Define an API endpoint to fetch all uploaded PDF documents belonging to a user
 @api_router.get("/get_uploaded_documents")
@@ -197,11 +211,25 @@ async def upload_file(request: Request,
 @api_router.post("/semantic_search/{doc_name}")
 async def generate_result_for_semantic_search(
     doc_name: str,
-    request: ChatMessagesRequest
+    request: ChatMessagesRequest,
+    cache: RedisBackend = Depends(get_redis_cache)
 ):
     logging.info("doc name: ",doc_name)
     logging.info("request_semantic_search: ",request.list_of_messages)
-
+    
+    # check if the response for this query has been cached
+    try: 
+        key_redis=doc_name+"#"+request.list_of_messages[-1].content.replace(" ","").lower()
+        value=await cache.get(key_redis)
+        if value:
+            time.sleep(1)
+            logging.info("redis cache hit, immediately return response")
+            return {"response":value}
+        
+        logging.info("redis cache miss")
+    except Exception as e:
+        logging.info("There is error with Redis server, can not do caching")
+        
     # Define parameters for accessing the S3 bucket
     bucket_name = AWS_BUCKET_NAME
     subfolder_prefix = f"{MAIN_TENANT}/"  # Include trailing slash
@@ -269,17 +297,38 @@ async def generate_result_for_semantic_search(
             pinecone_index=pinecone_index
     )
     
+    # cache the LLM response to Redis cache
+    try: 
+        await cache.set(key_redis,result_semantic_search,expire=600)
+        logging.info("cached LLM response")
+    except Exception as e:
+        logging.info("There is error with Redis server, can not cache LLM response")
+    
     return {"response":result_semantic_search}
    
 
 @api_router.post("/generate_summarization/{doc_name}")
 async def generate_result_for_semantic_search(
     doc_name: str,
-    request: ChatMessagesRequest
+    request: ChatMessagesRequest,
+    cache: RedisBackend = Depends(get_redis_cache)
 ):
     logging.info("doc name: ",doc_name)
     logging.info("preferred_response_length: ",request.preferred_response_length)
     logging.info("request_generate_summarization: ",request.list_of_messages)
+    
+    # check if the response for this query has been cached
+    try: 
+        key_redis=doc_name+"#"+request.list_of_messages[-1].content.replace(" ","").lower()
+        value=await cache.get(key_redis)
+        if value:
+            time.sleep(1)
+            logging.info("redis cache hit, immediately return response")
+            return {"response":value}
+        
+        logging.info("redis cache miss")
+    except Exception as e:
+        logging.info("There is error with Redis server, can not do caching")
     
     # Define parameters for accessing the S3 bucket
     bucket_name = AWS_BUCKET_NAME
@@ -341,8 +390,16 @@ async def generate_result_for_semantic_search(
             history_messages=history_messages,
             doc_key=f"{MAIN_TENANT}/{doc_name}",
             top_k=5,
-            preferred_response_length=request.preferred_response_length
+            preferred_response_length=request.preferred_response_length,
+            pinecone_index=pinecone_index
     )
+    
+    # cache the LLM response to Redis cache
+    try: 
+        await cache.set(key_redis,result_summarized_response,expire=600)
+        logging.info("cached LLM response")
+    except Exception as e:
+        logging.info("There is error with Redis server, can not cache LLM response")
     
     return {"response":result_summarized_response}
 

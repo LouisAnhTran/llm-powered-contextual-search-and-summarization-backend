@@ -1,7 +1,4 @@
 from fastapi import FastAPI
-from src.api.v1.app import api_router
-from src.config import PORT
-import logging
 from fastapi.middleware.cors import CORSMiddleware
 import time
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -10,6 +7,8 @@ import logging
 import sys 
 import logging_config
 
+from src.config import PORT
+from src.api.v1.app import api_router
 
 app = FastAPI()
 

@@ -222,7 +222,8 @@ async def generate_summarized_response(
         history_messages: List[SingleChatMessageRequest],
         doc_key: str,
         top_k: int,
-        preferred_response_length: str
+        preferred_response_length: str,
+        pinecone_index
 ):
     """  Generates a summarized response based on a user query and relevant document context.
 
@@ -249,7 +250,8 @@ async def generate_summarized_response(
         doc_key=doc_key,
         query=standalone_query,
         top_k=top_k,
-        embedding_model=embedding_model
+        embedding_model=embedding_model,
+        pinecone_index=pinecone_index
     )
 
     logging.info("similar_results: ",similar_results)
