@@ -1,9 +1,9 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+![Contributors][contributors-shield]
+![Forks][forks-shield]
+![Stargazers][stars-shield]
+![Issues][issues-shield]
+![MIT License][license-shield]
+![LinkedIn][linkedin-shield]
 
 
 
@@ -24,59 +24,16 @@
 
 <h2 align="center" style="text-decoration: none;">Document processing AI Application</h2>
 
-## Main Features:
+## About The Project :
 
 This application is designed to efficiently process contextual and semantic search, as well as summarization, on large PDF documents. The list of main features offered by the application is below:
 
-Indexing large documents efficiently using parallel processing and a distributed vector database.
-Allowing accurate semantic search (not just keyword-based) on those documents.
-Enabling the dynamic summarization of relevant sections.
-A well-designed AI pipeline for optimizing costs by reducing unnecessary LLM calls.
-Caching responses using an in-memory DB (Redis) to minimize costs and enhance user experience.
-PDF documents are encrypted and securely stored in an AWS S3 bucket.
-A clean and user-friendly interface built with Streamlit.
-
-
-
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-<a name="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-
-
-
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
-  <h3 align="center">Best-README-Template</h3>
-
-  <p align="center">
-    An awesome README template to jumpstart your projects!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-  </p>
-</div>
-
-
+- [x] Indexing large documents efficiently using parallel processing and a distributed vector database.
+- [x] Allowing accurate semantic search (not just keyword-based) on those documents.
+- [x] A well-designed AI pipeline for optimizing costs by reducing unnecessary LLM calls.
+- [x] Caching responses using an in-memory DB (Redis) to minimize costs and enhance user experience.
+- [x] PDF documents are encrypted and securely stored in an AWS S3 bucket.
+- [x] A clean and user-friendly interface built with Streamlit.
 
 <!-- TABLE OF CONTENTS -->
 <details>
