@@ -57,8 +57,82 @@ This section outlines the technologies and tools used to develop the application
 - Prompt templates are defined under [Prompt Templates](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/gen_ai/rag/prompt_template.py)
 - All constant variables needed to run the application are defined under [Configurations](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/config.py)
 
+## Quick Application run using Docker
+
+1. Install Docker:
+
+  - Ensure Docker is installed on your machine. If not, download and install it from [Docker](https://docs.docker.com/engine/install/)
+
+2. Create a Project Directory:
+  - In your home directory, create a new directory for the project
+    ```
+    mkdir ai-app
+    ```
+  - Navigate to the newly created directory:
+    ```
+    cd ai-app
+    ```
+3. Clone the Project and Set Up Environment Variables
+
+  - Clone the backend repository to your local machine:
+     ```
+     git clone https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend.git 
+     ```
+  - IMPORTANT! -> Navigate to the backend directory and paste the .env file containing all necessary credentials for the application.
+  - Go back to the ai-app directory and clone the frontend repository:
+     ```
+     git clone https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-frontend.git
+     ```
+4. Create a docker-compose.yml File:
+   - Create a docker-compose.yml file in ai-app directory with the following content:
+     ```yml
+      version: '3.8'
+
+      services:
+        redis:
+          image: redis
+          container_name: redis
+          ports:
+            - "6379:6379"
+      
+        backend:
+          image: semantic-search-and-text-summarization-app-backend
+          build:
+            context: ./backend
+            dockerfile: Dockerfile
+          ports:
+            - "8080:8080"
+          env_file:
+            - ./backend/.env
+          depends_on:
+            - redis
+      
+        frontend:
+          image: semantic-search-and-text-summarization-app-frontend
+          build:
+            context: ./streamlit_frontend
+            dockerfile: Dockerfile
+          ports:
+            - "8501:8501"
+          environment:
+            - BACKEND_API_URL=http://backend:8080/api/v1
+            - TENANT='staple_ai_client'
+          depends_on:
+            - backend
+
+     ```
+  6. Run the application:
+  - Run the following command to spin up three Docker containers (backend, frontend, and Redis server) to test the application:
+   ```
+    docker-compose up --build 
+   ```
+  - To stop all running containers, press CTRL + C, then run:
+  ```
+    docker-compose down
+  ```
+
 <!-- GETTING STARTED -->
-## Getting Started
+## Run application on Localhost (Without Docker)
 
 
 ### Prerequisites
@@ -123,11 +197,6 @@ poetry --version
    
 ![Screenshot 2025-02-15 at 12 20 59 AM](https://github.com/user-attachments/assets/6c1596c7-355a-45a2-8844-8c2f2f243850)
 
-### Flow diagrams:
-
-1. Semantic Search:
-
-2. Contextual Summarization:
 
 <!-- ACKNOWLEDGMENTS -->
 ## References:
