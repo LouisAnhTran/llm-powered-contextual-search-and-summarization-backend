@@ -74,7 +74,8 @@ pinecone_index = pinecone_instance.Index(PINECONE_INDEX)
 # Initialize Redis on FastAPI startup
 @api_router.on_event("startup")
 async def startup():
-    redis_client = redis.Redis(host="localhost", port=6379, db=0)
+    logging.info("is running in docker environemt: ",not os.getenv("HOSTNAME")==None)
+    redis_client = redis.Redis(host="redis" if os.getenv("HOSTNAME") else "localhost", port=6379, db=0)
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
 
 # Dependency to get Redis backend
