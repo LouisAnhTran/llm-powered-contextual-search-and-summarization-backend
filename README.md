@@ -123,11 +123,6 @@ poetry --version
    
 ![Screenshot 2025-02-15 at 12 20 59 AM](https://github.com/user-attachments/assets/6c1596c7-355a-45a2-8844-8c2f2f243850)
 
-### Flow diagrams:
-
-1. Semantic Search:
-
-2. Contextual Summarization:
 
 <!-- ACKNOWLEDGMENTS -->
 ## References:
