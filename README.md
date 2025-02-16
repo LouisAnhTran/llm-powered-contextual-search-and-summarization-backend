@@ -132,7 +132,7 @@ This section outlines the technologies and tools used to develop the application
   ```
 
 <!-- GETTING STARTED -->
-## Getting Started
+## Run application on Localhost (Without Docker)
 
 
 ### Prerequisites
