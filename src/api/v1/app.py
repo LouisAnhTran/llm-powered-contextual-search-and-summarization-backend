@@ -11,6 +11,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 import redis.asyncio as redis
 import time
+import os
 
 from src.models.requests import (
     ChatMessagesRequest
