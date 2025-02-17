@@ -209,7 +209,8 @@ poetry --version
 
 ### System Architecture:
    
-![Screenshot 2025-02-15 at 12 20 59 AM](https://github.com/user-attachments/assets/6c1596c7-355a-45a2-8844-8c2f2f243850)
+
+![Screenshot 2025-02-17 at 1 48 22 PM](https://github.com/user-attachments/assets/c09edfc7-c2e2-45b9-aa64-86be6478cf76)
 
 
 <!-- ACKNOWLEDGMENTS -->
