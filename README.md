@@ -126,12 +126,19 @@ This section outlines the technologies and tools used to develop the application
             - backend
 
      ```
+
+  - If you have followed all the steps correctly, your current directory should resemble the image below:
+
+![Screenshot 2025-02-17 at 1 14 39 PM](https://github.com/user-attachments/assets/b31dbade-ddb4-44ea-a814-c4f09c5a3d0c)
+
+
+    
   6. Run the application:
   - Run the following command to spin up three Docker containers (backend, frontend, and Redis server) to test the application:
    ```
     docker-compose up --build 
    ```
-  - The application (frontend) is running on port 8501. Please access it through [http://localhost:8501](http://localhost:8501)
+  - Wait for 10 seconds for the three containers to finish spinning up and running. Then, the application (frontend) should be running on port 8501. You can access it at [http://localhost:8501](http://localhost:8501)
   - To stop all running containers, press CTRL + C, then run:
   ```
     docker-compose down
