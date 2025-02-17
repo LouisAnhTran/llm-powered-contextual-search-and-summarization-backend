@@ -92,39 +92,39 @@ This section outlines the technologies and tools used to develop the application
 4. Create a docker-compose.yml File:
    - Create a docker-compose.yml file in ai-app directory with the following content:
      ```yml
-      version: '3.8'
+     version: '3.8'
 
-      services:
-        redis:
-          image: redis
-          container_name: redis
-          ports:
-            - "6379:6379"
-      
-        backend:
-          image: semantic-search-and-text-summarization-app-backend
-          build:
-            context: ./backend
-            dockerfile: Dockerfile
-          ports:
-            - "8080:8080"
-          env_file:
-            - ./backend/.env
-          depends_on:
-            - redis
-      
-        frontend:
-          image: semantic-search-and-text-summarization-app-frontend
-          build:
-            context: ./streamlit_frontend
-            dockerfile: Dockerfile
-          ports:
-            - "8501:8501"
-          environment:
-            - BACKEND_API_URL=http://backend:8080/api/v1
-            - TENANT='staple_ai_client'
-          depends_on:
-            - backend
+     services:
+       redis:
+         image: redis
+         container_name: redis
+         ports:
+           - "6379:6379"
+     
+       backend:
+         image: semantic-search-and-text-summarization-app-backend
+         build:
+           context: ./llm-powered-contextual-search-and-summarization-backend
+           dockerfile: Dockerfile
+         ports:
+           - "8080:8080"
+         env_file:
+           - ./llm-powered-contextual-search-and-summarization-backend/.env
+         depends_on:
+           - redis
+     
+       frontend:
+         image: semantic-search-and-text-summarization-app-frontend
+         build:
+           context: ./llm-powered-contextual-search-and-summarization-frontend
+           dockerfile: Dockerfile
+         ports:
+           - "8501:8501"
+         environment:
+           - BACKEND_API_URL=http://backend:8080/api/v1
+           - TENANT='staple_ai_client'
+         depends_on:
+           - backend
 
      ```
 
