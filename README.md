@@ -133,7 +133,7 @@ This section outlines the technologies and tools used to develop the application
 
 
     
-  6. Run the application:
+  5. Run the application:
   - Run the following command to spin up three Docker containers (backend, frontend, and Redis server) to test the application:
    ```
     docker-compose up --build 
