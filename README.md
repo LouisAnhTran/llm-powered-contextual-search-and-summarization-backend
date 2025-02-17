@@ -57,6 +57,11 @@ This section outlines the technologies and tools used to develop the application
 - Prompt templates are defined under [Prompt Templates](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/gen_ai/rag/prompt_template.py)
 - All constant variables needed to run the application are defined under [Configurations](https://github.com/LouisAnhTran/llm-powered-contextual-search-and-summarization-backend/blob/main/src/config.py)
 
+## Application Demo:
+
+[Watch the demo video on YouTube](https://www.youtube.com/watch?v=loZN4fdBfdU)
+
+
 ## Quick Application run using Docker
 
 1. Install Docker:
@@ -126,6 +131,7 @@ This section outlines the technologies and tools used to develop the application
    ```
     docker-compose up --build 
    ```
+  - The application (frontend) is running on port 8501. Please access it through [http://localhost:8501](http://localhost:8501)
   - To stop all running containers, press CTRL + C, then run:
   ```
     docker-compose down
