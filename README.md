@@ -27,6 +27,7 @@
 
 This application is designed to efficiently process contextual and semantic search, as well as summarization, on large PDF documents. The list of main features offered by the application is shown below:
 
+- [x] Allow users to upload multiple PDF documents seamlessly.
 - [x] Indexing large documents efficiently using parallel processing and a distributed vector database.
 - [x] Allowing accurate semantic search (not just keyword-based) on those documents.
 - [x] A well-designed AI pipeline for optimizing costs by reducing unnecessary LLM calls.
