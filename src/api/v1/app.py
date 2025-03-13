@@ -295,7 +295,7 @@ async def generate_result_for_semantic_search(
             username=MAIN_TENANT,
             history_messages=history_messages,
             doc_key=f"{MAIN_TENANT}/{doc_name}",
-            top_k=1,
+            top_k=3,
             pinecone_index=pinecone_index
     )
     
@@ -391,7 +391,7 @@ async def generate_result_for_semantic_search(
             username=MAIN_TENANT,
             history_messages=history_messages,
             doc_key=f"{MAIN_TENANT}/{doc_name}",
-            top_k=5,
+            top_k=8,
             preferred_response_length=request.preferred_response_length,
             pinecone_index=pinecone_index
     )

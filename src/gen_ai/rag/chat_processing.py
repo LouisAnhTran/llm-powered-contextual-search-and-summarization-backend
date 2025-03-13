@@ -185,7 +185,7 @@ async def generate_semantic_search_response(
         
             else:
                 # otherwise the passage is clear and readable, we straight away return response to user without making LLM call
-                return all_texts[0]
+                return " ".join(all_texts)
             
 
     # if similarity score of the most similar passage is less than our predefined threshold, implying that we can not find relavant information in our document to answer user query,so we will use fallback LLM-generated summary 
